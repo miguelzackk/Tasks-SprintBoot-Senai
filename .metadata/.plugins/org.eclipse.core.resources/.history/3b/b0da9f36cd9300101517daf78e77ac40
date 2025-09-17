@@ -1,0 +1,13 @@
+package com.todolist.todolist.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "usuario")
+
+public class Usuario {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
+}
