@@ -17,11 +17,12 @@ public class UsuarioController {
 
 	@PostMapping(value = "usuario/cadastro")
 	public ResponseEntity<?> saveUser(@RequestBody Usuario user) {
-		Usuario usuario = new Usuario(user.getNome(), user.getEmail(), user.getSenha());
-		usuarioRepository.save(usuario);
-		System.out.println("Usuario salvo com sucesso");
-		return ResponseEntity.ok("Usuário salvo com sucesso.");
+	    Usuario usuario = new Usuario(user.getNome(), user.getEmail(), user.getSenha());
+	    usuarioRepository.save(usuario);
+	    System.out.println("Usuário salvo com sucesso");
+	    return ResponseEntity.ok("Usuário salvo com sucesso.");
 	}
+
 
 	@PostMapping(value = "login")
 	public ResponseEntity<?> login(@RequestBody Usuario user) {
@@ -29,7 +30,7 @@ public class UsuarioController {
 		if (findUser == null) {
 			return ResponseEntity.ok("Logado com sucesso");
 		} else {
-			if (findUser.getSenha() == user.getSenha()) {
+			if (findUser.getSenha().equals(user.getSenha()))  {
 				return ResponseEntity.ok("Logado com sucesso.");
 			} else {
 				return ResponseEntity.ok("Senha incorreta.");
