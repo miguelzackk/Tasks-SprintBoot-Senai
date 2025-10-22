@@ -29,10 +29,9 @@ public class UsuarioController {
 	    usuarioRepository.save(usuario);
 	    System.out.println("Usuário salvo com sucesso");
         
-        // Crie um mapa para a resposta JSON
         Map<String, String> response = new HashMap<>();
         response.put("message", "Usuário salvo com sucesso.");
-	    return ResponseEntity.ok(response); // Retorna o mapa como JSON
+	    return ResponseEntity.ok(response); 
 	}
 
 
@@ -40,22 +39,21 @@ public class UsuarioController {
 	public ResponseEntity<?> login(@RequestBody Usuario user) {
 		Usuario findUser = usuarioRepository.findByEmail(user.getEmail());
         
-        // Crie um mapa para a resposta JSON
+        
         Map<String, String> response = new HashMap<>();
 
 		if (findUser == null) {
-            // *** CORREÇÃO LÓGICA ***
-            // Se o usuário não existe, não deve logar com sucesso.
+           
 			response.put("message", "Usuário não encontrado.");
-            // É melhor retornar um status de erro, como 401 (Não Autorizado)
+           
 			return ResponseEntity.status(401).body(response); 
 		} else {
 			if (findUser.getSenha().equals(user.getSenha()))  {
                 response.put("message", "Logado com sucesso.");
-				return ResponseEntity.ok(response); // Retorna {"message": "Logado com sucesso."}
+				return ResponseEntity.ok(response); 
 			} else {
                 response.put("message", "Senha incorreta.");
-				return ResponseEntity.status(401).body(response); // Retorna {"message": "Senha incorreta."}
+				return ResponseEntity.status(401).body(response); 
 			}
 		}
 	}
