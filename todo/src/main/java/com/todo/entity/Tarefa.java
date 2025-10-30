@@ -1,6 +1,7 @@
 package com.todo.entity;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ public class Tarefa {
 	@Column(length = 100, nullable = false)
 	private String nometarefa;
 	@Column(nullable = false)
-	private Date dataentrega;
+	private LocalDate dataentrega;
 	@Column(nullable = false)
 	private StatusTarefa status;
 
@@ -39,11 +40,11 @@ public class Tarefa {
 		this.nometarefa = nometarefa;
 	}
 
-	public Date getDataentrega() {
+	public LocalDate getDataentrega() {
 		return dataentrega;
 	}
 
-	public void setDataentrega(Date dataentrega) {
+	public void setDataentrega(LocalDate dataentrega) {
 		this.dataentrega = dataentrega;
 	}
 
@@ -59,7 +60,7 @@ public class Tarefa {
 
 	}
 
-	public Tarefa(String nometarefa, Date dataentrega, StatusTarefa status) {
+	public Tarefa(String nometarefa, LocalDate dataentrega, StatusTarefa status) {
 		super();
 		this.nometarefa = nometarefa;
 		this.dataentrega = dataentrega;
