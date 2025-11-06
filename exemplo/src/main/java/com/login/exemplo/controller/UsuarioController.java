@@ -2,6 +2,7 @@ package com.login.exemplo.controller;
 
 // Impor do Map e HashMap
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,8 +39,11 @@ public class UsuarioController {
 		usuarioRepository.save(usuario);
 		System.out.println("Usuário salvo com sucesso");
 
-		Map<String, String> response = new HashMap<>();
+		Map<String, Object> response = new LinkedHashMap<>();
 		response.put("message", "Usuário salvo com sucesso.");
+		response.put("nome", user.getNome());
+		response.put("email", user.getEmail());
+
 		return ResponseEntity.ok(response);
 	}
 
@@ -49,9 +53,13 @@ public class UsuarioController {
 		Usuario usuario = new Usuario(nome, email, senha);
 		usuarioRepository.save(usuario);
 
-		Map<String, String> response = new HashMap<>();
+		Map<String, Object> response = new HashMap<>();
 		response.put("message", "Usuário salvo com sucesso.");
+		response.put("nome", nome);
+		response.put("email", email);
+
 		return ResponseEntity.ok(response);
+
 	}
 
 	// fazer login - arrumado para funcionar no frontend
@@ -97,9 +105,8 @@ public class UsuarioController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esse ID não existe");
 		}
 	}
-	
-	
-	//mudar o usuairo
+
+	// mudar o usuairo
 	@PutMapping("/{id}")
 	public ResponseEntity<?> atualizar(@PathVariable int id, @RequestBody Usuario novoUsuario) {
 		Optional<Usuario> UsuarioExistente = usuarioRepository.findById(id);

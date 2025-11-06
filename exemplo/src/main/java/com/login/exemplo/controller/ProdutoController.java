@@ -1,6 +1,6 @@
 package com.login.exemplo.controller;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.login.exemplo.dto.ProdutoRequestDTO;
 import com.login.exemplo.entity.Produto;
 import com.login.exemplo.repository.ProdutoRepository;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class ProdutoController {
@@ -46,12 +49,16 @@ public class ProdutoController {
 
 	// cadastro de produto usando body do postman
 	@PostMapping(value = "produto/cadastro")
-	public ResponseEntity<?> cadastroProduto(@RequestBody Produto produto) {
+	public ResponseEntity<?> cadastroProduto(@Valid @RequestBody ProdutoRequestDTO produto) {
 		Produto produtos = new Produto(produto.getNome(), produto.getPreco(), produto.getQuantidade());
 		produtorepository.save(produtos);
 
-		Map<String, String> response = new HashMap<>();
-		response.put("message", "Produto salvo com sucesso.");
+		Map<String, Object> response = new LinkedHashMap<>();
+		response.put("message", "Usuário salvo com sucesso.");
+		response.put("nome", produto.getNome());
+		response.put("preço", produto.getPreco());
+		response.put("quantidade", produto.getQuantidade());
+
 		return ResponseEntity.ok(response);
 	}
 
