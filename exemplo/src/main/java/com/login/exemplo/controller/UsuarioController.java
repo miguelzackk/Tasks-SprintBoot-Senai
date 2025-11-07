@@ -1,6 +1,5 @@
 package com.login.exemplo.controller;
 
-// Impor do Map e HashMap
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,9 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.login.exemplo.dto.UsuarioRequestDTO;
+import com.login.exemplo.dto.UsuarioResponseDTO;
 import com.login.exemplo.entity.Usuario;
 import com.login.exemplo.repository.UsuarioRepository;
 
@@ -27,13 +28,14 @@ import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "*")
+@RequestMapping(value = "usuario")
 public class UsuarioController {
 
 	@Autowired
 	UsuarioRepository usuarioRepository;
 
-	// cadastro de usuario - arrumado para funcionar no frontend
-	@PostMapping(value = "usuario/cadastro")
+	// cadastro de usuario
+	@PostMapping(value = "cadastro")
 	public ResponseEntity<?> saveUser(@Valid @RequestBody UsuarioRequestDTO user) {
 		Usuario usuario = new Usuario(user.getNome(), user.getEmail(), user.getSenha());
 		usuarioRepository.save(usuario);
@@ -45,21 +47,6 @@ public class UsuarioController {
 		response.put("email", user.getEmail());
 
 		return ResponseEntity.ok(response);
-	}
-
-	@PostMapping(value = "usuario/cadastro/link/{nome}/{email}/{senha}")
-	public ResponseEntity<?> saveUser1(@PathVariable String nome, @PathVariable String email,
-			@PathVariable String senha) {
-		Usuario usuario = new Usuario(nome, email, senha);
-		usuarioRepository.save(usuario);
-
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "Usuário salvo com sucesso.");
-		response.put("nome", nome);
-		response.put("email", email);
-
-		return ResponseEntity.ok(response);
-
 	}
 
 	// fazer login - arrumado para funcionar no frontend
@@ -85,11 +72,44 @@ public class UsuarioController {
 		}
 	}
 
-	// listagem de usuarios
+	// Listagem de usuario DTO - lambda
 	@GetMapping(value = "view")
-	public List<Usuario> mostrar() {
+	public List<UsuarioResponseDTO> mostrar() {
 		List<Usuario> usuarios = usuarioRepository.findAll();
-		return usuarios;
+		List<UsuarioResponseDTO> listadeUsuarios = usuarios.stream().map(UsuarioResponseDTO::new).toList();
+
+		return listadeUsuarios;
+	}
+
+	// busca por id - dto
+	@GetMapping(value = "view/{id}")
+	public ResponseEntity<?> searchById(@PathVariable int id) {
+		Optional<Usuario> usuario = usuarioRepository.findById(id);
+
+		if (usuario.isPresent()) {
+			UsuarioResponseDTO dto = new UsuarioResponseDTO(usuario.get());
+			return ResponseEntity.status(HttpStatus.OK).body(dto);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esse ID não existe.");
+		}
+	}
+
+	// mudar o usuario
+	@PutMapping("/{id}")
+	public ResponseEntity<?> atualizar(@PathVariable int id, @RequestBody Usuario novoUsuario) {
+		Optional<Usuario> UsuarioExistente = usuarioRepository.findById(id);
+
+		if (UsuarioExistente.isPresent()) {
+			Usuario Usuario = UsuarioExistente.get();
+			Usuario.setNome(novoUsuario.getNome());
+//			Usuario.setSenha(novoUsuario.getSenha());
+			usuarioRepository.save(Usuario);
+			UsuarioResponseDTO dto = new UsuarioResponseDTO(Usuario);
+			return ResponseEntity.status(HttpStatus.OK).body(dto);
+
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	// deletar usuairo por id
@@ -106,20 +126,39 @@ public class UsuarioController {
 		}
 	}
 
-	// mudar o usuairo
-	@PutMapping("/{id}")
-	public ResponseEntity<?> atualizar(@PathVariable int id, @RequestBody Usuario novoUsuario) {
-		Optional<Usuario> UsuarioExistente = usuarioRepository.findById(id);
+	// cadastro pelo endpoint
+	@PostMapping(value = "cadastro/link/{nome}/{email}/{senha}")
+	public ResponseEntity<?> saveUser1(@PathVariable String nome, @PathVariable String email,
+			@PathVariable String senha) {
+		Usuario usuario = new Usuario(nome, email, senha);
+		usuarioRepository.save(usuario);
 
-		if (UsuarioExistente.isPresent()) {
-			Usuario Usuario = UsuarioExistente.get();
-			Usuario.setNome(novoUsuario.getNome());
-//			Usuario.setSenha(novoUsuario.getSenha());
-			usuarioRepository.save(Usuario);
-			return ResponseEntity.ok(Usuario);
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "Usuário salvo com sucesso.");
+		response.put("nome", nome);
+		response.put("email", email);
 
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+		return ResponseEntity.ok(response);
+
 	}
+
+	// listagem de usuarios
+//	@GetMapping(value = "usuario/view")
+//	public List<Usuario> mostrar() {
+//		List<Usuario> usuarios = usuarioRepository.findAll();
+//		return usuarios;
+//	}
+
+	// listagem de dados DTO - for
+//	@GetMapping(value = "usuario/view")
+//	public List<UsuarioResponseDTO> mostrar() {
+//		List<Usuario> usuarios = usuarioRepository.findAll();
+//		List<UsuarioResponseDTO> listadeUsuarios = new ArrayList<>();
+//		
+//		for (Usuario usuario : usuarios) {
+//			listadeUsuarios.add(new UsuarioResponseDTO(usuario));
+//		}
+//		
+//		return listadeUsuarios;
+//	}
 }
