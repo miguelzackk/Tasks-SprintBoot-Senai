@@ -1,6 +1,6 @@
 package com.todo.entity;
 
-import java.sql.Date;
+
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
