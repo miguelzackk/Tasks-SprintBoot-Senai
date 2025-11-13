@@ -1,10 +1,6 @@
 package com.login.exemplo.controller;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.login.exemplo.dto.UsuarioRequestDTO;
 import com.login.exemplo.dto.UsuarioResponseDTO;
 import com.login.exemplo.entity.Usuario;
-import com.login.exemplo.repository.UsuarioRepository;
+import com.login.exemplo.service.UsuarioService;
 
 import jakarta.validation.Valid;
 
@@ -32,113 +28,55 @@ import jakarta.validation.Valid;
 public class UsuarioController {
 
 	@Autowired
-	UsuarioRepository usuarioRepository;
+	UsuarioService usuarioService;
 
+	
+	//ta funfando
 	// cadastro de usuario
 	@PostMapping(value = "cadastro")
 	public ResponseEntity<?> saveUser(@Valid @RequestBody UsuarioRequestDTO user) {
-		Usuario usuario = new Usuario(user.getNome(), user.getEmail(), user.getSenha());
-		usuarioRepository.save(usuario);
-		System.out.println("Usuário salvo com sucesso");
-
-		Map<String, Object> response = new LinkedHashMap<>();
-		response.put("message", "Usuário salvo com sucesso.");
-		response.put("nome", user.getNome());
-		response.put("email", user.getEmail());
-
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.saveUser(user));
 	}
-
+	
 	// fazer login - arrumado para funcionar no frontend
 	@PostMapping(value = "login")
-	public ResponseEntity<?> login(@RequestBody Usuario user) {
-		Usuario findUser = usuarioRepository.findByEmail(user.getEmail());
-
-		Map<String, String> response = new HashMap<>();
-
-		if (findUser == null) {
-
-			response.put("message", "Usuário não encontrado.");
-
-			return ResponseEntity.status(401).body(response);
-		} else {
-			if (findUser.getSenha().equals(user.getSenha())) {
-				response.put("message", "Logado com sucesso.");
-				return ResponseEntity.ok(response);
-			} else {
-				response.put("message", "Senha incorreta.");
-				return ResponseEntity.status(401).body(response);
-			}
-		}
+	public ResponseEntity<?> login(@Valid @RequestBody UsuarioRequestDTO user) {
+		return ResponseEntity.status(HttpStatus.OK).body(usuarioService.login(user));
 	}
 
 	// Listagem de usuario DTO - lambda
 	@GetMapping(value = "view")
 	public List<UsuarioResponseDTO> mostrar() {
-		List<Usuario> usuarios = usuarioRepository.findAll();
-		List<UsuarioResponseDTO> listadeUsuarios = usuarios.stream().map(UsuarioResponseDTO::new).toList();
-
-		return listadeUsuarios;
+		return usuarioService.mostrar();
 	}
-
+	
+	
+	//ta retornando em string
 	// busca por id - dto
 	@GetMapping(value = "view/{id}")
 	public ResponseEntity<?> searchById(@PathVariable int id) {
-		Optional<Usuario> usuario = usuarioRepository.findById(id);
-
-		if (usuario.isPresent()) {
-			UsuarioResponseDTO dto = new UsuarioResponseDTO(usuario.get());
-			return ResponseEntity.status(HttpStatus.OK).body(dto);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esse ID não existe.");
-		}
+		return ResponseEntity.status(HttpStatus.OK).body(usuarioService.searchById(id));
 	}
-
+	
+	
+	//retorna em string
 	// mudar o usuario
 	@PutMapping("/{id}")
-	public ResponseEntity<?> atualizar(@PathVariable int id, @RequestBody Usuario novoUsuario) {
-		Optional<Usuario> UsuarioExistente = usuarioRepository.findById(id);
-
-		if (UsuarioExistente.isPresent()) {
-			Usuario Usuario = UsuarioExistente.get();
-			Usuario.setNome(novoUsuario.getNome());
-//			Usuario.setSenha(novoUsuario.getSenha());
-			usuarioRepository.save(Usuario);
-			UsuarioResponseDTO dto = new UsuarioResponseDTO(Usuario);
-			return ResponseEntity.status(HttpStatus.OK).body(dto);
-
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+	public ResponseEntity<?> atualizar(@Valid @PathVariable int id, @RequestBody Usuario novoUsuario) {
+		return ResponseEntity.status(HttpStatus.OK).body(usuarioService.atualizar(id, novoUsuario));
 	}
 
 	// deletar usuairo por id
 	@DeleteMapping(value = "delete/{id}")
 	public ResponseEntity<?> deleteUsuario(@PathVariable int id) {
-		Optional<Usuario> usuario = usuarioRepository.findById(id);
-
-		if (usuario.isPresent()) {
-			usuarioRepository.deleteById(id);
-			return ResponseEntity.status(HttpStatus.OK).body("Usuário deletado com sucesso.");
-		} else {
-
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esse ID não existe");
-		}
+		return ResponseEntity.status(HttpStatus.OK).body(usuarioService.deleteUsuario(id));
 	}
 
 	// cadastro pelo endpoint
 	@PostMapping(value = "cadastro/link/{nome}/{email}/{senha}")
-	public ResponseEntity<?> saveUser1(@PathVariable String nome, @PathVariable String email,
+	public ResponseEntity<?> saveUser1(@Valid @PathVariable String nome, @PathVariable String email,
 			@PathVariable String senha) {
-		Usuario usuario = new Usuario(nome, email, senha);
-		usuarioRepository.save(usuario);
-
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "Usuário salvo com sucesso.");
-		response.put("nome", nome);
-		response.put("email", email);
-
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).body(usuarioService.saveUser1(nome, email, senha));
 
 	}
 

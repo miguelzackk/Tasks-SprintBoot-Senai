@@ -37,4 +37,10 @@ public class UsuarioResponseDTO {
 		this.email = email;
 	}
 
+	@Override
+	public String toString() {
+		return "id=" + id + ", nome=" + nome + ", email=" + email;
+	}
+
+	
 }
