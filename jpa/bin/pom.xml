@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.6</version>
+		<version>3.5.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.todo</groupId>
-	<artifactId>todo</artifactId>
+	<groupId>com.mysql</groupId>
+	<artifactId>jpa</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>todo</name>
-	<description>To do program.</description>
+	<name>jpa</name>
+	<description>Criação da primeira entidade.</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -39,12 +39,6 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
