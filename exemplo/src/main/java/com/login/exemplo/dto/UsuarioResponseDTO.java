@@ -42,5 +42,4 @@ public class UsuarioResponseDTO {
 		return "id=" + id + ", nome=" + nome + ", email=" + email;
 	}
 
-	
 }
