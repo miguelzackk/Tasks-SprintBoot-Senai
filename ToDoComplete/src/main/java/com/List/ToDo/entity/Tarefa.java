@@ -29,8 +29,8 @@ public class Tarefa {
 		super();
 		this.nome = nome;
 		this.descricao = descricao;
-		this.status = status;
-		this.dtInicio = dtInicio;
+		this.status = Status.A_FAZER;
+		this.dtInicio = LocalDate.now();
 		this.dtFim = dtFim;
 	}
 

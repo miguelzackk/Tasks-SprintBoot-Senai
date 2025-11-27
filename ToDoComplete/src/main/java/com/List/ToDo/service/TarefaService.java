@@ -1,10 +1,12 @@
 package com.List.ToDo.service;
 
+
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.List.ToDo.entity.Status;
 import com.List.ToDo.dto.TarefaRequestDTO;
 import com.List.ToDo.dto.TarefaResponseDTO;
 import com.List.ToDo.entity.Tarefa;
@@ -21,7 +23,7 @@ public class TarefaService {
 	// criar tarefa
 	public TarefaResponseDTO saveTask(TarefaRequestDTO tarefaRequestDTO) {
 		Tarefa tarefa = new Tarefa(tarefaRequestDTO.getNome(), tarefaRequestDTO.getDescricao(),
-				tarefaRequestDTO.getStatus(), tarefaRequestDTO.getDtInicio(), tarefaRequestDTO.getDtFim());
+				Status.A_FAZER, tarefaRequestDTO.getDtInicio(), tarefaRequestDTO.getDtFim());
 
 		tarefaRepository.save(tarefa);
 
